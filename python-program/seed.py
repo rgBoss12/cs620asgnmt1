@@ -17,9 +17,6 @@ CL=[[]]
 while True: 
 	c, addr = s.accept()     
 	print('Got connection from', addr)
-
-	CL.append([addr[0],str(addr[1])])
-	print(CL)
 	
 	str1 =''
 	
@@ -30,9 +27,11 @@ while True:
 	# str1 = str1.join(i)
 	print(str1)
 	c.send(str1.encode('ascii'))
-
-	c.shutdown(socket.SHUT_RDWR)
+	
+	CL.append([addr[0],str(addr[1])])
+	print(CL)
+	# c.shutdown(socket.SHUT_RDWR)
 	c.close() 
 
-s.shutdown(socket.SHUT_RDWR)
+# s.shutdown(socket.SHUT_RDWR)
 s.close()

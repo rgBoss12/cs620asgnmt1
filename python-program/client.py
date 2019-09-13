@@ -13,11 +13,11 @@ def threaded(c):
 		if not data: 
 			print('Bye') 
 			break
+		print(data[::-1])
+		# data = data[::-1] 
 
-		data = data[::-1] 
-
-		c.send(data)
-	c.shutdown(socket.SHUT_RDWR)
+		# c.send(data)
+	# c.shutdown(socket.SHUT_RDWR)
 	c.close()
 
 #function to split an array into even chunks
@@ -28,23 +28,17 @@ def chunks(l, k):
 def grandchlid_to_send(node):
 	host = node[0]
 	port = int(node[1])
-
+	print(node)
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 	s.connect((host, port))
+	print("connected to " + node[0]+':'+node[1])
 	message = ("client at " + node[1])[::-1]
-	while True:
+	# s.send(message.encode('ascii'))
+	for i in range(10):
 		s.send(message.encode('ascii'))
-
-		data = s.recv(1024)
-
-		print('Recieved :', str(data.decode('ascii')))
-		ans = input('\nDo you want to send the message again? :')
-		if ans == 'y':
-			continue
-		else:
-			break
-	s.shutdown(socket.SHUT_RDWR)
+		time.sleep(5)
+	# s.shutdown(socket.SHUT_RDWR)
 	s.close()
 
 def Main():
@@ -62,15 +56,13 @@ def Main():
 			break
 		node_list += str(data.decode('ascii'))
 	
-	# print(node_list)
-
 	node_array = list(chunks((node_list.split(':')), 2))
 
 	
 
 	print(node_array)
 
-	seed_s.shutdown(socket.SHUT_RDWR)
+	# seed_s.shutdown(socket.SHUT_RDWR)
 	seed_s.close()
 	children = []
 
@@ -92,16 +84,17 @@ def Main():
 			print('Connected to :', addr[0], ':', addr[1])
 
 			start_new_thread(threaded, (c,))
-		s.shutdown(socket.SHUT_RDWR)
+		# s.shutdown(socket.SHUT_RDWR)
 		s.close()
 		# break
 	else:
 		# print('a')
-		for node in random.choices(node_array, k=random.choice(list(range(1,5)) if len(node_array)>0 else [0])):
-			child = os.fork()
-			if not child:
+		for node in random.choices(node_array, k=random.choice(list(range(1,min(5, len(node_array)+1))) if len(node_array)>0 else [0])):
+			child = 0
+			if not os.fork():
+				child = os.getpid()
 				grandchlid_to_send(node)
-				print('a')
+				# print('a')
 				os._exit(0)
 			else:
 				children.append(child)
