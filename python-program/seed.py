@@ -4,7 +4,7 @@ from array import *
 s = socket.socket()      
 print("Socket successfully created")
 
-port = 12357   
+port = 12380  
 
 s.bind(('', port))       
 print("socket binded to %s" %(port))
